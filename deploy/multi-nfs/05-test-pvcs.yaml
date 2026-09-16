@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: test-claim-apps
+spec:
+  storageClassName: nfs-apps
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      # Kubernetes API requires 'requests.storage' to be defined in PVC schema.
+      # Because NFS has no directory quota, 1Mi is a standard symbolic minimal value.
+      storage: 1Mi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: test-claim-db
+spec:
+  storageClassName: nfs-db
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Mi

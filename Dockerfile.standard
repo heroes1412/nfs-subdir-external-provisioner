@@ -1,0 +1,20 @@
+# Standard single-architecture Dockerfile for local/standard Docker build.
+# Does not require the vendor directory; downloads dependencies cleanly via go.mod.
+
+FROM golang:1.26 AS build-env
+
+WORKDIR /src
+
+# Cache dependencies layer
+COPY go.mod go.sum ./
+RUN go mod download
+
+# Copy source code and build statically linked binary
+COPY . .
+RUN CGO_ENABLED=0 go build -mod=mod -a -ldflags '-extldflags "-static"' -o /bin/main ./cmd/nfs-subdir-external-provisioner
+
+FROM scratch
+COPY --from=build-env /bin/main /nfs-subdir-external-provisioner
+COPY --from=build-env /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+
+ENTRYPOINT ["/nfs-subdir-external-provisioner"]

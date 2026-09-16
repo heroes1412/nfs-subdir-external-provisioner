@@ -1,0 +1,12 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: nfs-db
+provisioner: k8s-sigs.io/nfs-db
+reclaimPolicy: Delete
+parameters:
+  archiveOnDelete: "false"
+  onDelete: "delete"
+# mountOptions:
+#   - nfsvers=4.2
+#   - noatime

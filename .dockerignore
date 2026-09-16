@@ -1,0 +1,24 @@
+# Exclude vendor directory (modules are downloaded cleanly via go.mod)
+vendor/
+
+# Version control & metadata
+.git/
+.github/
+.idea/
+.vscode/
+
+# Build artifacts & archives
+bin/
+*.tar
+*.tar.gz
+*.zip
+scratch/
+
+# Deployment & documentation assets not needed in container build
+deploy/
+charts/
+scripts/
+*.bat
+README.md
+walkthrough.md
+implementation_plan.md

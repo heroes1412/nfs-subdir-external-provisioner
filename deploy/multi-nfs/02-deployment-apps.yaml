@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nfs-provisioner-apps
+  labels:
+    app: nfs-provisioner-apps
+  namespace: default
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: nfs-provisioner-apps
+  template:
+    metadata:
+      labels:
+        app: nfs-provisioner-apps
+    spec:
+      serviceAccountName: nfs-client-provisioner
+      # imagePullSecrets:
+      #   - name: harbor-secret
+      containers:
+        - name: nfs-client-provisioner
+          image: h2372/nfs-subdir-external-provisioner:v1
+          volumeMounts:
+            - name: nfs-client-root
+              mountPath: /persistentvolumes
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              cpu: 100m
+              memory: 128Mi
+          env:
+            - name: PROVISIONER_NAME
+              value: k8s-sigs.io/nfs-apps
+            - name: NFS_SERVER
+              value: 192.168.2.10
+            - name: NFS_PATH
+              value: /data/nfs/apps
+      volumes:
+        - name: nfs-client-root
+          nfs:
+            server: 192.168.2.10
+            path: /data/nfs/apps
